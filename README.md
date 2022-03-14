@@ -3,7 +3,7 @@
 
 Given a one-dimensional array, a maximum number of intervals *n* and a cost function,
 **inept** calculates the optimal partitioning of the array into intervals with up to *n* partitions.
-Numba is deployed for fast calculation of the underlying linear program.
+Numba is deployed for fast calculation of the underlying dynamic program.
 
 The algorithm was published in\
 <a id="1">[1]</a> 
