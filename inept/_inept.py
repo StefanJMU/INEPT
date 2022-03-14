@@ -24,9 +24,9 @@ def _optimal_partitioning(data: np.array, n_groups: int, cost):
     for i in range(table.shape[1]):
         group_range = min(i + 1, n_groups - 1 if i != table.shape[1] - 1 else n_groups)
 
-        table[0, i] = cost(data, 0, i)
+        table[0, i] = cost(data[0:i+1])
         for j in range(1, group_range):
-            costs = np.array([table[j - 1, z - 1] + cost(data, z, i) for z in range(j-1, i + 1)])
+            costs = np.array([table[j - 1, z - 1] + cost(data[z:i+1]) for z in range(j-1, i + 1)])
             z_raw = np.argmin(costs)
             table[j, i] = costs[z_raw]
             split_points[j, i] = z_raw + (j - 1)
@@ -35,10 +35,10 @@ def _optimal_partitioning(data: np.array, n_groups: int, cost):
     
 
 def interval_partitioning(data: np.array,
-                          cost: Callable,
+                          cost: Callable[[np.array], float],
                           n_intervals: int = 2,
                           mode: Literal['only_python', 'with_python', 'no_python'] = 'with_python'):
-    
+
     """
         Optimal interval partitioning of array data according to penalty function cost.
         
@@ -46,8 +46,8 @@ def interval_partitioning(data: np.array,
         ----------
         data : np.array
             1D numpy array containing the data to be optimally split into intervals
-        cost : callable
-            function or other callable object
+        cost : callable[[np.array],float]
+            function or other callable object. Calculates the cost the passed array.
         n_intervals : int, default = 2
             number of intervals array data is to be split in. Expected to be at least 2.
         mode : Literal['only_python'. 'with_python', 'no_python']
@@ -55,7 +55,10 @@ def interval_partitioning(data: np.array,
                             'with_python' allows Python with Numba acceleration
                             'no_python' optimization without usage of Python. The cost function must not use
                              any non numba compatible features
-    
+        returns
+        -------
+        List of tuples (cost, split points), where cost indicates the total cost of the partition defined in
+        split points. The split points are exclusive and are grouped to the next interval.
     """
     
     if n_intervals < 2:
