@@ -47,14 +47,14 @@ def interval_partitioning(data: np.array,
         data : np.array
             1D numpy array containing the data to be optimally split into intervals
         cost : callable
-            numba conform callable
+            function or other callable object
         n_intervals : int, default = 2
             number of intervals array data is to be split in. Expected to be at least 2.
         mode : Literal['only_python'. 'with_python', 'no_python']
             Operation mode: 'only_python' deploys no Numba acceleration.
                             'with_python' allows Python with Numba acceleration
                             'no_python' optimization without usage of Python. The cost function must not use
-                             any non numba comptaible features
+                             any non numba compatible features
     
     """
     
